@@ -103,6 +103,3 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`✅ Server running at: http://localhost:${PORT}`);
 });
-
-//# Copy to .env and fill in your OpenAI API key
-//GROQ_API_KEY=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
