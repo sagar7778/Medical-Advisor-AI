@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Medical Advisor AI</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      margin: 2rem 1rem;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: #003f5c;
+    }
+
+    .disclaimer {
+      font-size: 0.9em;
+      color: #555;
+      margin: 0.5rem 0 1.5rem;
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+      color: #003f5c;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #f9f9f9;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      background: #2f80ed;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #1c5bbf;
+    }
+
+    .response-box {
+      background: #f5faff;
+      border-left: 5px solid #2f80ed;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border-radius: 6px;
+      color: #333;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 1.2rem;
+      }
+
+      button {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Medical Advisor AI</h1>
+    <p class="disclaimer">
+      ⚠️ This tool provides general guidance. It is <strong>not</strong> a substitute for professional medical diagnosis or treatment.
+    </p>
+
+    <label for="language">Select Language:</label>
+    <select id="language">
+      <option value="english" selected>English</option>
+      <option value="hindi">Hindi (हिंदी)</option>
+    </select>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" placeholder="e.g., 30" />
+
+    <label for="existing">Existing Conditions:</label>
+    <input type="text" id="existing" placeholder="e.g., diabetes, asthma" />
+
+    <label for="symptoms">Describe your symptoms:</label>
+    <textarea id="symptoms" rows="5" placeholder="e.g., I have a fever and sore throat for 2 days"></textarea>
+
+    <button id="submit">Get Advice</button>
+
+    <h2 style="margin-top: 2rem; color: #003f5c;">AI Response:</h2>
+    <div class="response-box" id="result">...</div>
+  </div>
+
+  <script>
+    document.getElementById('submit').addEventListener('click', async () => {
+      const symptoms = document.getElementById('symptoms').value;
+      const age = document.getElementById('age').value;
+      const existingConditions = document.getElementById('existing').value;
+      const language = document.getElementById('language').value;
+
+      if (!symptoms.trim()) {
+        alert('Please describe your symptoms.');
+        return;
+      }
+
+      document.getElementById('result').innerText = 'Loading...';
+
+      try {
+        const res = await fetch('http://localhost:4000/api/medical-advisor', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ symptoms, age, existingConditions, language })
+        });
+
+        const data = await res.json();
+        document.getElementById('result').innerText = data.answer || JSON.stringify(data);
+      } catch (e) {
+        document.getElementById('result').innerText = 'Error: ' + e.message;
+      }
+    });
+  </script>
+</body>
+</html>
